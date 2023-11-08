@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:16.0-alpine
+    restart: always
+    ports:
+      - '5436:5432'
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    container_name: postgres_clothes_store
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4:7.7
+    container_name: pgadmin_clothes_store
+    depends_on:
+      - db
+    volumes:
+      - ./pgadmin-data:/var/lib/pgadmin
+    restart: always
+    ports:
+      - '5052:80'
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PG_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PG_PASS}
