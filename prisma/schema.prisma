@@ -12,7 +12,7 @@ datasource db {
 
 // ALL USERS ARE CUSTOMERS
 model User {
-  id               String            @id @default(uuid())
+  id               String      @id @default(uuid())
   name             String
   lastName         String
   email            String
@@ -25,23 +25,53 @@ model User {
 }
 
 model Store {
-  id              String            @id @default(uuid())
-  name            String
-  description     String
-  BusinessProfile UserStore[]
+  id               String      @id @default(uuid())
+  name             String
+  description      String
+  businessProfiles UserStore[]
+  Product          Product[]
 }
 
 model Role {
-  id              String            @id @default(uuid())
+  id              String      @id @default(uuid())
   name            String
   BusinessProfile UserStore[]
 }
 
 model UserStore {
-  id         String   @id @default(uuid())
+  id         String @id @default(uuid())
   roles      Role[]
-  User       User     @relation(fields: [userId], references: [id])
+  User       User   @relation(fields: [userId], references: [id])
   userId     String
-  business   Store @relation(fields: [businessId], references: [id])
+  business   Store  @relation(fields: [businessId], references: [id])
   businessId String
+}
+
+model Product {
+  id      String          @id @default(uuid())
+  name    String
+  Store   Store           @relation(fields: [storeId], references: [id])
+  storeId String
+  photos  MediaResource[]
+  brand   Brand           @relation(fields: [brandId], references: [id])
+  brandId String
+}
+
+model Brand {
+  id      String    @id @default(uuid())
+  name    String
+  Product Product[]
+}
+
+model PaymentMethod {
+  id          String @id @default(uuid())
+  name        String
+  description String
+}
+
+model MediaResource {
+  id        String   @id @default(uuid())
+  path      String
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?
 }
