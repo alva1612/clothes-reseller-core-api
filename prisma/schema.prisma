@@ -48,13 +48,21 @@ model UserStore {
 }
 
 model Product {
-  id      String          @id @default(uuid())
-  name    String
-  Store   Store           @relation(fields: [storeId], references: [id])
-  storeId String
-  photos  MediaResource[]
-  brand   Brand           @relation(fields: [brandId], references: [id])
-  brandId String
+  id           String          @id @default(uuid())
+  name         String
+  Store        Store           @relation(fields: [storeId], references: [id])
+  storeId      String
+  photos       MediaResource[]
+  brand        Brand           @relation(fields: [brandId], references: [id])
+  brandId      String
+  productStyle ProductStyle[]
+}
+
+model ProductStyle {
+  id        String   @id @default(uuid())
+  name      String
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?
 }
 
 model Brand {
