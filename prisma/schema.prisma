@@ -15,10 +15,12 @@ model User {
   id               String      @id @default(uuid())
   name             String
   lastName         String
+  username         String
   email            String
   password         String
   state            String
   businessProfiles UserStore[]
+  phoneNumber      String
 
   isConfirmed  Boolean @default(false)
   securityHash String  @default(uuid())

@@ -6,10 +6,11 @@ import { ProductModule } from './modules/product/product.module';
 import { BrandModule } from './modules/brand/brand.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { MediaResourceModule } from './modules/media-resource/media-resource.module';
-import { PrismaService } from './lib/prisma/prisma.service';
+import { PrismaModule } from '@lib/prisma/prisma.module';
 
 @Module({
   imports: [
+    PrismaModule,
     StoreModule,
     ProductModule,
     BrandModule,
@@ -17,6 +18,6 @@ import { PrismaService } from './lib/prisma/prisma.service';
     MediaResourceModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService],
 })
 export class AppModule {}

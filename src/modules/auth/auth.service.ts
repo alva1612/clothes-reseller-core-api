@@ -1,26 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { RegisterDto } from './dto/register.dto';
+import { UserService } from './user/user.service';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(private readonly _userService: UserService) {}
+
+  async register(registerDto: RegisterDto) {
+    const uniqueFields: Partial<RegisterDto> = { email: registerDto.email };
+    if (registerDto.phoneNumber)
+      uniqueFields.phoneNumber = registerDto.phoneNumber;
+    const existingUser = await this._userService.findOneByEitherField(
+      uniqueFields,
+    );
+
+    if (existingUser)
+      throw new BadRequestException(
+        `User with ${existingUser.field} ${
+          existingUser.user[existingUser.field]
+        } exists`,
+      );
+
+    const createdUser = this._userService.create(registerDto);
+    return createdUser;
   }
 
-  findAll() {
+  login() {
     return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
   }
 }
