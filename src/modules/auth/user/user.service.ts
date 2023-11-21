@@ -25,7 +25,7 @@ export class UserService {
     return this._prismaService.user.findFirst({ where: { id } });
   }
   async findOneByEitherField(data: Partial<User>) {
-    for (const field in Object.keys(data)) {
+    for (const field in data) {
       const user = await this._prismaService.user.findFirst({
         where: { [field]: data[field] },
       });

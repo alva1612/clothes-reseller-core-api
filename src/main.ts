@@ -7,6 +7,9 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   const config = new DocumentBuilder().setVersion('1.0').build();
   const document = SwaggerModule.createDocument(app, config);
+  app.enableCors({
+    origin: 'http://localhost:3001',
+  });
   SwaggerModule.setup('api', app, document);
   await app.listen(3000);
 }

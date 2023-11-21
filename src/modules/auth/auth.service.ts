@@ -1,18 +1,21 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { RegisterDto } from './dto/register.dto';
+import { RegisterEmailDto } from './dto/register.dto';
 import { UserService } from './user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly _userService: UserService) {}
 
-  async register(registerDto: RegisterDto) {
-    const uniqueFields: Partial<RegisterDto> = { email: registerDto.email };
-    if (registerDto.phoneNumber)
-      uniqueFields.phoneNumber = registerDto.phoneNumber;
+  async register(registerDto: RegisterEmailDto) {
+    const uniqueFields: Partial<RegisterEmailDto> = {
+      email: registerDto.email,
+    };
     const existingUser = await this._userService.findOneByEitherField(
       uniqueFields,
     );
+
+    if (registerDto.confirmPassword !== registerDto.password)
+      throw new BadRequestException("Password don't match");
 
     if (existingUser)
       throw new BadRequestException(
@@ -21,7 +24,10 @@ export class AuthService {
         } exists`,
       );
 
-    const createdUser = this._userService.create(registerDto);
+    const createdUser = this._userService.create({
+      email: registerDto.email,
+      password: registerDto.password,
+    });
     return createdUser;
   }
 
