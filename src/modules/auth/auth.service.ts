@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { RegisterEmailDto } from './dto/register.dto';
 import { UserService } from './user/user.service';
+import { LoginEmailDto } from './dto/login.dto';
+import { scryptSync } from 'node:crypto';
 
 @Injectable()
 export class AuthService {
@@ -24,14 +26,16 @@ export class AuthService {
         } exists`,
       );
 
+    const passwordCrypt = scryptSync(registerDto.password, 'salt', 2);
+    const password = passwordCrypt.toString('utf-8');
     const createdUser = this._userService.create({
       email: registerDto.email,
-      password: registerDto.password,
+      password,
     });
     return createdUser;
   }
 
-  login() {
+  login(data: LoginEmailDto) {
     return `This action returns all auth`;
   }
 }

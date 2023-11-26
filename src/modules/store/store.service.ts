@@ -1,11 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
+import { PrismaService } from '@lib/prisma/prisma.service';
 
 @Injectable()
 export class StoreService {
-  create(createStoreDto: CreateStoreDto) {
-    return 'This action adds a new store';
+  constructor(private _prismaService: PrismaService) {}
+
+  async create(createStoreDto: CreateStoreDto) {
+    const createOutput = this._prismaService.store.create({
+      data: {
+        ...createStoreDto,
+      },
+    });
+    /**
+     * Aqui debería de crear el perfil de fundador al nuevo usuario
+     * en base al id
+     */
+    return createOutput;
   }
 
   findAll() {
