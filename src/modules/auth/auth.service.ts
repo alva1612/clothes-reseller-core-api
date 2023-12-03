@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { RegisterEmailDto } from './dto/register.dto';
@@ -9,6 +8,7 @@ import { UserService } from './user/user.service';
 import { LoginEmailDto } from './dto/login.dto';
 import { encryptPassword } from './utils/password.utils';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -43,25 +43,31 @@ export class AuthService {
     return createdUser;
   }
 
-  async login(data: LoginEmailDto) {
-    const existingUser = await this._userService.findOneByEitherField({
-      email: data.email,
-    });
-
-    if (!existingUser.user) throw new NotFoundException('No user with email');
-
-    const passwordMatches =
-      encryptPassword(data.password).base64 === existingUser.user.password;
-    if (!passwordMatches) throw new UnauthorizedException('No match');
-
-    delete existingUser.user.password;
-    delete existingUser.user.isConfirmed;
-    delete existingUser.user.securityHash;
+  async login(data: Partial<User>) {
+    console.log({ data });
+    console.log(data.password);
+    data.password && delete data.password;
+    data.isConfirmed && delete data.isConfirmed;
+    data.securityHash && delete data.securityHash;
     const payload = {
-      user: existingUser.user,
+      user: data,
     };
     return {
       access_token: await this._jwtService.signAsync(payload),
     };
+  }
+
+  async validateUser(email: string, password: string) {
+    const existingUser = await this._userService.findOneByEitherField({
+      email,
+    });
+    if (!existingUser.user) return null;
+
+    const passwordMatches =
+      encryptPassword(password).base64 === existingUser.user.password;
+
+    if (!passwordMatches) return null;
+
+    return existingUser.user;
   }
 }
