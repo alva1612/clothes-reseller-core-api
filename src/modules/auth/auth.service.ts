@@ -1,11 +1,6 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { RegisterEmailDto } from './dto/register.dto';
 import { UserService } from './user/user.service';
-import { LoginEmailDto } from './dto/login.dto';
 import { encryptPassword } from './utils/password.utils';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
