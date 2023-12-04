@@ -10,14 +10,22 @@ import {
 import { StoreService } from './store.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { JwtAuth } from '../auth/decorators/jwt.decorator';
+import { GetUser, UserInPayload } from '../auth/decorators/get-user.decorator';
 
+@ApiTags('Store')
 @Controller('store')
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}
 
   @Post()
-  create(@Body() createStoreDto: CreateStoreDto) {
-    return this.storeService.create(createStoreDto);
+  @JwtAuth()
+  create(
+    @GetUser() user: UserInPayload,
+    @Body() createStoreDto: CreateStoreDto,
+  ) {
+    return this.storeService.create(createStoreDto, user);
   }
 
   @Get()

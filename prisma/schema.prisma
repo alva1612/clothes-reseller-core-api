@@ -19,7 +19,7 @@ model User {
   email            String
   password         String
   state            String
-  businessProfiles StoreProfile[]
+  storeProfiles StoreProfile[]
   phoneNumber      String?
 
   isConfirmed  Boolean   @default(false)

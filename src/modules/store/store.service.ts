@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@lib/prisma/prisma.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
-import { PrismaService } from '@lib/prisma/prisma.service';
+import { UserInPayload } from '../auth/decorators/get-user.decorator';
 
 @Injectable()
 export class StoreService {
   constructor(private _prismaService: PrismaService) {}
 
-  async create(createStoreDto: CreateStoreDto) {
+  async create(createStoreDto: CreateStoreDto, user: UserInPayload) {
     const createOutput = this._prismaService.store.create({
       data: {
         ...createStoreDto,

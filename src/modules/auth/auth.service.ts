@@ -39,8 +39,6 @@ export class AuthService {
   }
 
   async login(data: Partial<User>) {
-    console.log({ data });
-    console.log(data.password);
     data.password && delete data.password;
     data.isConfirmed && delete data.isConfirmed;
     data.securityHash && delete data.securityHash;
